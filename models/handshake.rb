@@ -107,7 +107,9 @@ ITEMS = [
   "a swarm of angry bees, AHHH!",
   "a single chicken nugget!",
   "a stack of turnips!",
-  "a rotten turnip! Ugh!!"
+  "a rotten turnip! Ugh!!",
+  "another Sea Bass, you can keep that!",
+  "something that doens't look like a scallop. Wait. It's a Sea Bass!"
 ]
 
 EMOJIS = [
@@ -139,20 +141,32 @@ EMOJIS = [
   "🐤"
 ]
 
+PREFIX = [
+  "Hey",
+  "Hello",
+  "Hi",
+  "Yo",
+  "Psst"
+]
+
 class Handshake < ActiveRecord::Base
   belongs_to :thanker, class_name: "User"
   belongs_to :thankee, class_name: "User"
 
-  def generate_message
-    rand > 0.5 ? quote_message : thanks_message
+  def generate_message(thankee_nickname)
+    rand > 0.5 ? quote_message(thankee_nickname) : thanks_message(thankee_nickname)
   end
 
-  def quote_message
-    "#{thanker.mention} has thanked #{thankee.mention}! Hey #{thankee.discord_name}, " + QUOTES.sample + " " + EMOJIS.sample
+  def quote_message(thankee_nickname)
+    "#{thanker.mention} has thanked #{thankee.mention}! #{PREFIX.sample} #{clean_nickname(thankee_nickname)}, " + QUOTES.sample + " " + EMOJIS.sample
   end
 
-  def thanks_message
-    "#{thanker.mention} has thanked #{thankee.mention}! #{thankee.discord_name} receives " + ITEMS.sample + " " + EMOJIS.sample
+  def thanks_message(thankee_nickname)
+    "#{thanker.mention} has thanked #{thankee.mention}! #{clean_nickname(thankee_nickname)} receives " + ITEMS.sample + " " + EMOJIS.sample
+  end
+
+  def clean_nickname(thankee_nickname)
+    thankee_nickname.split(" ").first
   end
 end
 
