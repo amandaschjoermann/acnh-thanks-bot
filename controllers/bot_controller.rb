@@ -17,6 +17,8 @@ class BotController
   def thank_command(event)
     channel = @bot.channel(ENV['CHANNEL_ID'])
 
+
+
     event.message.delete
     thanker = set_user(event.user)
 
@@ -30,8 +32,16 @@ class BotController
       @bot.send_message(ENV['CHANNEL_ID'], "", nil, { description: "Lol. You're sneaky #{thanker.mention}! You can't thank yourself! 🤪", color: 0xc3e400 } )
       return nil
     elsif event.message.mentions.first
+
+      if event.message.content.split(">").second.nil?
+        content = ""
+      else
+        content = event.message.content.split(">").second.strip.capitalize
+      end
+
       handshake = Handshake.create!(thankee: thankee, thanker: thanker)
-      bot_message = @bot.send_message(ENV['CHANNEL_ID'], "", nil, { description: handshake.generate_message(thankee_nickname), color: 0xc3e400 } )
+      @bot.send_message(ENV['CHANNEL_ID'], "#{thanker.mention} has thanked #{thankee.mention}! " + content)
+      @bot.send_message(ENV['CHANNEL_ID'], "", nil, { description: handshake.generate_message(thankee_nickname), color: 0xc3e400 } )
       return nil
     else
       return "Something went wrong!"
@@ -44,6 +54,5 @@ class BotController
     user = User.find_by_discord_id(event_user.id)
     user ? user : User.create(discord_id: event_user.id, discord_name: event_user.username)
   end
-
 end
 
