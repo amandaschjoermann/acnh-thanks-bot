@@ -300,7 +300,11 @@ class Handshake < ActiveRecord::Base
   end
 
   def clean_nickname(thankee_nickname)
-    thankee_nickname.split(" ").first
+    if thankee_nickname.include?("from")
+      thankee_nickname.split("from").first.strip
+    else
+      thankee_nickname.split(" ").first
+    end
   end
 end
 
