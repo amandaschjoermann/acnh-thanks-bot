@@ -36,7 +36,7 @@ class BotController
       if event.message.content.split(">").second.nil?
         content = ""
       else
-        content = event.message.content.split(">").second.strip.capitalize
+        content = event.message.content.split(">", 2).second.strip.capitalize
       end
 
       handshake = Handshake.create!(thankee: thankee, thanker: thanker)
